@@ -41,7 +41,7 @@ public enum CodeProducer {
       } else if (fType.isAssignableFrom(Map.class)) {
          return processMapType(f, fType);
       } else {
-         return fieldNameWithColon(f.getName()) + "QuickSon.SINGLETON.toJson(s)";
+         return fieldNameWithColon(f.getName()) + "\" + " + QuickSon.class.getName() + ".SINGLETON.toJson(o." + f.getName() + ") ";
       }
    }
 
