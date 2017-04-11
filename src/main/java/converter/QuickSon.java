@@ -26,15 +26,18 @@ public enum QuickSon {
    }
 
    public String toJson(Object o) {
-      try {
-         // TODO: this is not thread safe!
-         if (!this.cache.containsKey(o.getClass())) {
-            this.cache.put(o.getClass(), getConverter(o.getClass()));
+      if (o == null) {
+         return "null";
+      } else {
+         try {
+            // TODO: this is not thread safe!
+            if (!this.cache.containsKey(o.getClass())) {
+               this.cache.put(o.getClass(), getConverter(o.getClass()));
+            }
+            return this.cache.get(o.getClass()).toJson(o);
+         } catch (Exception e) {
+            throw new RuntimeException(e);
          }
-         return this.cache.get(o.getClass()).toJson(o);
-      } catch (Exception e) {
-         // TODO exception handling
-         return e.getMessage();
       }
    }
 
