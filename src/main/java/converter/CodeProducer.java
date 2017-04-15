@@ -1,6 +1,9 @@
 package converter;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +34,9 @@ public enum CodeProducer {
    public static String produceFieldString(Field f) {
       Class< ? > fType = f.getType();
       if (fType.isPrimitive() || AUTOBOXED_PRIMITIVES.contains(fType)) {
-         return fieldNameWithColon(f.getName()) + "\"+o." + f.getName();
+         return fieldNameWithColon(f.getName()) + "\"+" + getFieldAccessorName(f);
       } else if (fType.equals(String.class)) {
-         return fieldNameWithColon(f.getName()) + stringValueWithNullCheck(f.getName());
+         return fieldNameWithColon(f.getName()) + stringValueWithNullCheck(f);
       } else if (fType.isArray()) {
          return processArrayType(f, fType);
       } else if (fType.isAssignableFrom(List.class)) {
@@ -45,13 +48,32 @@ public enum CodeProducer {
       }
    }
 
-   private static String stringValueWithNullCheck(String fName) {
-      String ret = "\" + ( o." + fName + " == null ? \"null\" : \"\\\"\"+o." + fName + "+\"\\\"\" )";
+   private static String stringValueWithNullCheck(Field f) {
+      String ret = "\" + ( " + getFieldAccessorName(f) + " == null ? \"null\" : \"\\\"\"+" + getFieldAccessorName(f) + "+\"\\\"\" )";
       return ret;
+   }
+
+   private static String getFieldAccessorName(Field f) {
+      Method getter = getGetter(f);
+      if (getter != null) {
+         return "o." + getter.getName() + "()";
+      } else {
+         return "o." + f.getName();
+      }
    }
 
    private static String fieldNameWithColon(String fName) {
       return "\"\\\"" + fName + "\\\": ";
+   }
+
+   // Source: http://stackoverflow.com/a/2638662/2757140
+   private static Method getGetter(Field field) {
+      try {
+         Class< ? > type = field.getDeclaringClass();
+         return new PropertyDescriptor(field.getName(), type).getReadMethod();
+      } catch (IntrospectionException e) {
+         return null;
+      }
    }
 
    private static String processArrayType(Field f, Class< ? > fType) {

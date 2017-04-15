@@ -4,8 +4,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javassist.CannotCompileException;
@@ -59,7 +61,8 @@ public enum QuickSon {
    // actual JSON producing code is written here!
    private String getConverterMethodBody(Class< ? > cls) {
       List<String> fieldsStrings = new ArrayList<>();
-      for (Field f : cls.getFields()) {
+      Set<Field> fields = getClassFields(cls);
+      for (Field f : fields) {
          fieldsStrings.add(CodeProducer.produceFieldString(f));
       }
 
@@ -69,4 +72,10 @@ public enum QuickSon {
       return sb.toString();
    }
 
+   private Set<Field> getClassFields(Class< ? > cls) {
+      Set<Field> ret = new HashSet<>();
+      Arrays.stream(cls.getFields()).forEach(f -> ret.add(f));
+      Arrays.stream(cls.getDeclaredFields()).forEach(f -> ret.add(f));
+      return ret;
+   }
 }
