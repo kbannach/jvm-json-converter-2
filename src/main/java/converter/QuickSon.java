@@ -3,12 +3,12 @@ package converter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -24,7 +24,7 @@ public enum QuickSon {
 
    private QuickSon() {
       this.pool = ClassPool.getDefault();
-      this.cache = new HashMap<>();
+      this.cache = new ConcurrentHashMap<>();
    }
 
    public String toJson(Object o) {
@@ -32,7 +32,6 @@ public enum QuickSon {
          return "null";
       } else {
          try {
-            // TODO: this is not thread safe!
             if (!this.cache.containsKey(o.getClass())) {
                this.cache.put(o.getClass(), getConverter(o.getClass()));
             }
