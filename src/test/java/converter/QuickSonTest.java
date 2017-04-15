@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import pojoSamples.NestedStudent;
 import pojoSamples.Student;
+import pojoSamples.StudentWithGetters;
 
 public class QuickSonTest {
 
@@ -12,14 +13,14 @@ public class QuickSonTest {
       Student s = new Student();
       s.age = 20;
       s.name = "test";
-      assertThat(QuickSon.SINGLETON.toJson(s)).isEqualToIgnoringWhitespace("{ \"name\": \"test\", \"age\": 20 }");
+      assertThat(QuickSon.SINGLETON.toJson(s)).isEqualToIgnoringWhitespace("{ \"age\": 20, \"name\": \"test\" }");
    }
 
    @Test
    public void studentWithNullNameTest() {
       Student s = new Student();
       s.age = 21;
-      assertThat(QuickSon.SINGLETON.toJson(s)).isEqualToIgnoringWhitespace("{ \"name\": null, \"age\": 21 }");
+      assertThat(QuickSon.SINGLETON.toJson(s)).isEqualToIgnoringWhitespace("{ \"age\": 21, \"name\": null }");
    }
 
    @Test
@@ -38,13 +39,21 @@ public class QuickSonTest {
       n1.child = n2;
 
       String expected = "{ " + //
-            "\"student\": { \"name\": \"first\", \"age\": 21 }, " + //
+            "\"student\": { \"age\": 21, \"name\": \"first\" }, " + //
             "\"child\": { " + //
-            "\"student\": { \"name\": \"second\", \"age\": 22 }, " + //
+            "\"student\": { \"age\": 22, \"name\": \"second\" }, " + //
             "\"child\": null" + //
             " } " + //
             "}";
       // test
       assertThat(QuickSon.SINGLETON.toJson(n1)).isEqualToIgnoringWhitespace(expected);
+   }
+
+   @Test
+   public void studentWithGettersTest() {
+      StudentWithGetters s = new StudentWithGetters();
+      s.setAge(20);
+      s.setName("test");
+      assertThat(QuickSon.SINGLETON.toJson(s)).isEqualToIgnoringWhitespace("{ \"name\": \"test\", \"age\": 20 }");
    }
 }
