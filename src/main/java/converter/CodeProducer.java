@@ -30,7 +30,6 @@ public enum CodeProducer {
    /**
     * produces json constructing code based on field type
     */
-   // TODO only public fields supported for now (no getter/setter support)
    public static String produceFieldString(Field f) {
       Class< ? > fType = f.getType();
       if (fType.isPrimitive() || AUTOBOXED_PRIMITIVES.contains(fType)) {
