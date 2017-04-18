@@ -31,7 +31,7 @@ public enum CodeProducer {
    public static String produceFieldString(Field f) {
       Class< ? > fType = f.getType();
       if (fType.isPrimitive() || AUTOBOXED_PRIMITIVES.contains(fType)) {
-         return StringWrapper.fieldNameWithColon(f.getName()) + "\"+" + StringWrapper.getFieldAccessorName(f);
+         return StringWrapper.fieldNameWithColon(f.getName()) + "\" + " + StringWrapper.getFieldAccessorName(f);
       } else if (fType.equals(String.class)) {
          return StringWrapper.fieldNameWithColon(f.getName()) + StringWrapper.stringValueWithNullCheck(f);
       } else if (fType.isArray()) {

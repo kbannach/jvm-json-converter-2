@@ -9,7 +9,7 @@ public enum StringWrapper {
    ;
 
    static String stringValueWithNullCheck(Field f) {
-      return "\" + ( " + getFieldAccessorName(f) + " == null ? \"null\" : \"\\\"\"+" + getFieldAccessorName(f) + "+\"\\\"\" )";
+      return "\" + ( " + getFieldAccessorName(f) + " == null ? \"null\" : \"\\\"\" + " + getFieldAccessorName(f) + " + \"\\\"\" )";
    }
 
    static String getFieldAccessorName(Field f) {
