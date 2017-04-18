@@ -35,11 +35,11 @@ public enum CodeProducer {
       } else if (fType.equals(String.class)) {
          return StringWrapper.fieldNameWithColon(f.getName()) + StringWrapper.stringValueWithNullCheck(f);
       } else if (fType.isArray()) {
-         return CollectionsCodeProducer.processArrayType(f, fType);
+         return CollectionsCodeProducer.processArrayType(f);
       } else if (fType.isAssignableFrom(List.class)) {
-         return CollectionsCodeProducer.processListType(f, fType);
+         return CollectionsCodeProducer.processListType(f);
       } else if (fType.isAssignableFrom(Map.class)) {
-         return CollectionsCodeProducer.processMapType(f, fType);
+         return CollectionsCodeProducer.processMapType(f);
       } else {
          return StringWrapper.fieldNameWithColon(f.getName()) + "\" + " + QuickSon.class.getName() + ".SINGLETON.toJson(o." + f.getName() + ") ";
       }

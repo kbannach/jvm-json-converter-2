@@ -15,6 +15,7 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
+import code_produce.CodeProducer;
 
 public enum QuickSon {
    SINGLETON;
@@ -62,6 +63,8 @@ public enum QuickSon {
       List<String> fieldsStrings = new ArrayList<>();
       Set<Field> fields = getClassFields(cls);
       for (Field f : fields) {
+         String s = CodeProducer.produceFieldString(f);
+         System.out.println(s);
          fieldsStrings.add(CodeProducer.produceFieldString(f));
       }
 
@@ -77,4 +80,18 @@ public enum QuickSon {
       Arrays.stream(cls.getDeclaredFields()).forEach(f -> ret.add(f));
       return ret;
    }
+
+   public String arrayToJson(Object[] arr) {
+      return "[ " + Arrays.stream(arr).map(obj -> QuickSon.SINGLETON.toJson(obj)).collect(Collectors.joining(", ")) + " ]";
+   }
+
+   public String listToJson(List< ? > list) {
+      return this.arrayToJson(list.toArray());
+   }
+
+   public String mapToJson(Map< ? , ? > map) {
+      // TODO
+      return null;
+   }
+
 }
