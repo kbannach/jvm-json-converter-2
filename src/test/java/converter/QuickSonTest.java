@@ -1,8 +1,8 @@
 package converter;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.Test;
 import pojoSamples.NestedStudent;
@@ -31,12 +31,12 @@ public class QuickSonTest {
 
    @Test
    public void nestedStudentsTest() {
-      // prepare
       NestedStudent n1 = new NestedStudent();
       Student s1 = new Student();
       s1.name = "first";
       s1.age = 21;
       n1.student = s1;
+
       NestedStudent n2 = new NestedStudent();
       Student s2 = new Student();
       s2.name = "second";
@@ -66,8 +66,7 @@ public class QuickSonTest {
    @Test
    public void studentWithCollectionsTest() {
       Integer[] ints = new Integer[]{1, 2, 3, 4, 5};
-      List<String> strgs = new ArrayList<>();
-      Stream.of("a", "b", "c", "d").forEach(s -> strgs.add(s));
+      List<String> strgs = Stream.of("a", "b", "c", "d").collect(Collectors.toList());
 
       StudentWithCollections s = new StudentWithCollections();
       s.id = 1;
@@ -78,6 +77,23 @@ public class QuickSonTest {
             "{ \"strings\": [ \"a\", \"b\", \"c\", \"d\" ], " + //
                   "\"id\": 1, " + //
                   "\"integers\": [ 1, 2, 3, 4, 5 ] }" //
+      );
+   }
+
+   @Test
+   public void studentWithCollectionsTest2() {
+      Integer[] ints = new Integer[]{1, 2, 3, null, 5};
+      List<String> strgs = Stream.of("a", null, "c", "d").collect(Collectors.toList());
+
+      StudentWithCollections s = new StudentWithCollections();
+      s.id = 1;
+      s.integers = ints;
+      s.strings = strgs;
+
+      assertThat(QuickSon.SINGLETON.toJson(s)).isEqualToIgnoringWhitespace(//
+            "{ \"strings\": [ \"a\", null, \"c\", \"d\" ], " + //
+                  "\"id\": 1, " + //
+                  "\"integers\": [ 1, 2, 3, null, 5 ] }" //
       );
    }
 }
