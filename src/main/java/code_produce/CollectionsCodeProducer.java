@@ -34,7 +34,7 @@ public enum CollectionsCodeProducer {
 
    private static String convert(COLLECTION_TYPE colType, Field f) {
       String ret = StringWrapper.fieldNameWithColon(f.getName()) + "\" +";
-      ret += QuickSon.class.getName() + ".SINGLETON.convert" + colType.getString() + "ToJson(o." + f.getName() + ") + \"";
+      ret += QuickSon.class.getName() + ".SINGLETON." + colType.getString() + "ToJson(o." + f.getName() + ") ";
       return ret;
    }
 

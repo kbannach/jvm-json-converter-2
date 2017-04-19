@@ -26,6 +26,13 @@ public enum QuickSon {
    private QuickSon() {
       this.pool = ClassPool.getDefault();
       this.cache = new ConcurrentHashMap<>();
+
+      // put converters for the primitives (for the sake of collections converting, see QuickSon.arrayToJson() )
+      IJsonConverter simpleConverter = o -> o.toString();
+      for (Class< ? > cls : CodeProducer.AUTOBOXED_PRIMITIVES) {
+         this.cache.put(cls, simpleConverter);
+      }
+      this.cache.put(String.class, o -> o == null ? "null" : "\"" + o.toString() + "\"");
    }
 
    public String toJson(Object o) {
@@ -61,12 +68,7 @@ public enum QuickSon {
    // actual JSON producing code is written here!
    private String getConverterMethodBody(Class< ? > cls) {
       List<String> fieldsStrings = new ArrayList<>();
-      Set<Field> fields = getClassFields(cls);
-      for (Field f : fields) {
-         String s = CodeProducer.produceFieldString(f);
-         System.out.println(s);
-         fieldsStrings.add(CodeProducer.produceFieldString(f));
-      }
+      getClassFields(cls).forEach(f -> fieldsStrings.add(CodeProducer.produceFieldString(f)));
 
       StringBuilder sb = new StringBuilder("public String toJson(" + cls.getName() + " o) { return \"{ \"+");
       sb.append(Arrays.stream(fieldsStrings.toArray(new String[]{})).collect(Collectors.joining("+\", \"+")));
@@ -86,12 +88,11 @@ public enum QuickSon {
    }
 
    public String listToJson(List< ? > list) {
-      return this.arrayToJson(list.toArray());
+      return this.arrayToJson(list.toArray(new Object[]{}));
    }
 
    public String mapToJson(Map< ? , ? > map) {
       // TODO
       return null;
    }
-
 }

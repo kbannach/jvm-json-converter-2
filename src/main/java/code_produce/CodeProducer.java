@@ -10,7 +10,7 @@ import converter.QuickSon;
 public enum CodeProducer {
    ;
 
-   private static Set<Class< ? >> AUTOBOXED_PRIMITIVES = getAutoboxedPrimitives();
+   public static Set<Class< ? >> AUTOBOXED_PRIMITIVES = getAutoboxedPrimitives();
 
    private static Set<Class< ? >> getAutoboxedPrimitives() {
       Set<Class< ? >> ret = new HashSet<>();
