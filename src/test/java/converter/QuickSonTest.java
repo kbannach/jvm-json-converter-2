@@ -1,10 +1,16 @@
 package converter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import org.junit.Test;
 import pojoSamples.NestedStudent;
 import pojoSamples.Student;
+import pojoSamples.StudentWithCollections;
 import pojoSamples.StudentWithGetters;
+
+// TODO compare with GSON
 
 public class QuickSonTest {
 
@@ -55,5 +61,23 @@ public class QuickSonTest {
       s.setAge(20);
       s.setName("test");
       assertThat(QuickSon.SINGLETON.toJson(s)).isEqualToIgnoringWhitespace("{ \"name\": \"test\", \"age\": 20 }");
+   }
+
+   @Test
+   public void studentWithCollectionsTest() {
+      Integer[] ints = new Integer[]{1, 2, 3, 4, 5};
+      List<String> strgs = new ArrayList<>();
+      Stream.of("a", "b", "c", "d").forEach(s -> strgs.add(s));
+
+      StudentWithCollections s = new StudentWithCollections();
+      s.id = 1;
+      s.integers = ints;
+      s.strings = strgs;
+
+      assertThat(QuickSon.SINGLETON.toJson(s)).isEqualToIgnoringWhitespace(//
+            "{ \"strings\": [ \"a\", \"b\", \"c\", \"d\" ], " + //
+                  "\"id\": 1, " + //
+                  "\"integers\": [ 1, 2, 3, 4, 5 ] }" //
+      );
    }
 }
