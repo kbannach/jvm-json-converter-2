@@ -15,7 +15,7 @@ import pojoSamples.StudentWithCollections;
 import pojoSamples.StudentWithGetters;
 import com.google.gson.Gson;
 
-public class QuickSonGsonComparison {
+public class QuickSonGsonComparisonTest {
 
    private Map<Class< ? >, IJsonConverter> initialCache;
 
