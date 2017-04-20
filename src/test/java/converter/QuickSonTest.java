@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.Test;
+import pojoSamples.NestedObject;
 import pojoSamples.NestedStudent;
 import pojoSamples.Student;
 import pojoSamples.StudentWithCollections;
@@ -93,7 +94,25 @@ public class QuickSonTest {
       assertThat(QuickSon.SINGLETON.toJson(s)).isEqualToIgnoringWhitespace(//
             "{ \"strings\": [ \"a\", null, \"c\", \"d\" ], " + //
                   "\"id\": 1, " + //
-                  "\"integers\": [ 1, 2, 3, null, 5 ] }" //
-      );
+                  "\"integers\": [ 1, 2, 3, null, 5 ] }");
+   }
+
+   @Test
+   public void nestedObjectTest() {
+      NestedObject obj1 = new NestedObject();
+      NestedObject obj2 = new NestedObject();
+      NestedObject obj3 = new NestedObject();
+      obj1.id = 1;
+      obj2.id = 2;
+      obj3.id = 3;
+      obj1.child = obj2;
+      obj2.child = obj3;
+
+      assertThat(QuickSon.SINGLETON.toJson(obj1)).isEqualToIgnoringWhitespace(//
+            "{ \"id\": 1, " + //
+                  "\"child\": { \"id\": 2, " + //
+                  "\"child\": { \"id\": 3, \"child\": null } " + //
+                  "} " + //
+                  "}");
    }
 }
