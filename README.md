@@ -1,6 +1,6 @@
 # jvm-json-converter-2
 
-Performs serialization of Object to JSON about 2 thimes quicker than Google's Gson.
+Performs serialization of Object to JSON about 2 times quicker than Google's Gson.
 
 ## API
 
