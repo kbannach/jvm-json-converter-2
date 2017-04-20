@@ -3,12 +3,12 @@ package converter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -22,10 +22,12 @@ public enum QuickSon {
 
    private ClassPool                       pool;
    private Map<Class< ? >, IJsonConverter> cache;
+   private Object                          lock;
 
    private QuickSon() {
       this.pool = ClassPool.getDefault();
-      this.cache = new ConcurrentHashMap<>();
+      this.cache = new HashMap<>();
+      this.lock = new Object();
 
       // put converters for the primitives (for the sake of collections converting, see QuickSon.arrayToJson() )
       IJsonConverter simpleConverter = o -> o.toString();
@@ -40,10 +42,12 @@ public enum QuickSon {
          return "null";
       } else {
          try {
-            if (!this.cache.containsKey(o.getClass())) {
-               this.cache.put(o.getClass(), getConverter(o.getClass()));
+            synchronized (this.lock) {
+               if (!this.cache.containsKey(o.getClass())) {
+                  this.cache.put(o.getClass(), getConverter(o.getClass()));
+               }
+               return this.cache.get(o.getClass()).toJson(o);
             }
-            return this.cache.get(o.getClass()).toJson(o);
          } catch (Exception e) {
             throw new RuntimeException(e);
          }
@@ -89,10 +93,5 @@ public enum QuickSon {
 
    public String listToJson(List< ? > list) {
       return this.arrayToJson(list.toArray(new Object[]{}));
-   }
-
-   public String mapToJson(Map< ? , ? > map) {
-      // TODO
-      return null;
    }
 }
