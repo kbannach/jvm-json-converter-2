@@ -11,8 +11,6 @@ import pojoSamples.Student;
 import pojoSamples.StudentWithCollections;
 import pojoSamples.StudentWithGetters;
 
-// TODO compare with GSON
-
 public class QuickSonTest {
 
    @Test
